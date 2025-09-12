@@ -52,6 +52,5 @@ namespace LoanManagementSystem.Controllers
             var result = await _service.Delete(id);
             return Ok(result);
         }
-
     }
 }

@@ -47,7 +47,7 @@ namespace LoanManagementSystem.Controllers
             return BadRequest(document);
         }
         [HttpDelete("{id}")]
-        private async Task<ActionResult<Document>> Delete(int id)
+        public async Task<ActionResult<Document>> Delete(int id)
         {
             var deleted = await _service.Delete(id);
             return Ok(deleted);

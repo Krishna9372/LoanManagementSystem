@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace LoanManagementSystem.Models
 {
@@ -38,7 +39,9 @@ namespace LoanManagementSystem.Models
 
         [Required]
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        [JsonIgnore]
         public virtual ICollection<Notification>? Notification { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Report>? Report { get; set; }
     }
 }

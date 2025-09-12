@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LoanManagementSystem.Models
 {
@@ -37,6 +38,7 @@ namespace LoanManagementSystem.Models
 
         [Required]
         public bool Active { get; set; } = true;
+        [JsonIgnore]
         public virtual ICollection<LoanApplication>? LoanApplication { get; set; }
     }
 }

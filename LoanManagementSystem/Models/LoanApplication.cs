@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices.Marshalling;
+using System.Text.Json.Serialization;
 
 namespace LoanManagementSystem.Models
 {
@@ -55,8 +56,11 @@ namespace LoanManagementSystem.Models
         public virtual Customer? Customer { get; set; }
         public virtual LoanScheme? LoanScheme { get; set; }
         public virtual LoanOfficer? LoanOfficer { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Document>? Document { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Repayment>? Repayment { get; set; }
+        [JsonIgnore]
         public virtual ICollection<PaymentTransaction>? PaymentTransaction { get; set; }
     }
 }

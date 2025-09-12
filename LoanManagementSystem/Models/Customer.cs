@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 namespace LoanManagementSystem.Models
 {
     public enum KYCStatus
@@ -39,7 +40,9 @@ namespace LoanManagementSystem.Models
 
         [Required(ErrorMessage = "KYC status is required")]
         public KYCStatus KYCStatus { get; set; }
+        [JsonIgnore]
         public virtual User? User { get; set; }
+        [JsonIgnore]
         public virtual ICollection<LoanApplication>? LoanApplication { get; set; }
     }
 }

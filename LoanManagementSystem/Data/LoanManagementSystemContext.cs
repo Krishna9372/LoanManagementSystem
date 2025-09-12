@@ -7,9 +7,9 @@ namespace LoanManagementSystem.Data
     {
         public LoanManagementSystemContext(DbContextOptions<LoanManagementSystemContext> options):base(options) { }
         public DbSet<User> Users { get; set; }
-        public DbSet<LoanOfficer> loanOfficers { get; set; }
+        public DbSet<LoanOfficer> LoanOfficers { get; set; }
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<LoanScheme> LoanSheme { get; set; }
+        public DbSet<LoanScheme> LoanSchemes { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<LoanApplication> LoanApplications { get; set; }
         public DbSet<PaymentTransaction> PaymentsTransactions { get; set; }

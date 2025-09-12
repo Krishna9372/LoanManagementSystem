@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LoanManagementSystem.Models
 {
@@ -50,6 +51,7 @@ namespace LoanManagementSystem.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal PenaltyAmount { get; set; } = 0;
         public virtual LoanApplication? LoanApplication { get; set; }
+        [JsonIgnore]
         public virtual ICollection<PaymentTransaction>? PaymentTransaction { get; set; }
     }
 }

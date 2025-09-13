@@ -32,7 +32,7 @@ namespace LoanManagementSystem.Repository
             if (existing != null)
             {
                 existing.Username = user.Username;
-                existing.PasswordHash = user.PasswordHash;
+                existing.Password = user.Password;
                 existing.Role = user.Role;
                 await _context.SaveChangesAsync();
             }

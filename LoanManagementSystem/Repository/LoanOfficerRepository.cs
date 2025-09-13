@@ -53,5 +53,9 @@ namespace LoanManagementSystem.Repository
             }
             return existing;
         }
+        public async Task<LoanOfficer> GetByUserId(int userId)
+        {
+            return await _context.LoanOfficers.FirstOrDefaultAsync(o => o.UserId == userId);
+        }
     }
 }

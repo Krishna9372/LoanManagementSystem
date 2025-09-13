@@ -51,7 +51,9 @@ namespace LoanManagementSystem.Repository
                 existing.UploadedAt = document.UploadedAt;
                 existing.VerifiedBy = document.VerifiedBy;
                 existing.VerificationStatus = document.VerificationStatus;
+                await _context.SaveChangesAsync();
             }
+
             return existing;
         }
     }

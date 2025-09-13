@@ -24,7 +24,7 @@ namespace LoanManagementSystem.Models
             @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?""{}|<>]).{8,}$",
             ErrorMessage = "Password must contain at least one uppercase, one lowercase, one digit, and one special character."
         )]
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]

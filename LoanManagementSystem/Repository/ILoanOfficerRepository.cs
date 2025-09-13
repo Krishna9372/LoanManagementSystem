@@ -9,5 +9,6 @@ namespace LoanManagementSystem.Repository
         Task<LoanOfficer> Update(LoanOfficer loanOfficer);
         Task<LoanOfficer> Delete(int id);
         Task<IEnumerable<LoanOfficer>> GetAll();
+        Task<LoanOfficer> GetByUserId(int userId);
     }
 }

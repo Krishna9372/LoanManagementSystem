@@ -30,6 +30,10 @@ namespace LoanManagementSystem.Service
         {
             return await _repos.Update(officer);
         }
+        async Task<LoanOfficer> ILoanOfficerService.GetByUserId(int userId)
+        {
+            return await _repos.GetByUserId(userId);
+        }
 
 
 

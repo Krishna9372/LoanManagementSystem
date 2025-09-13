@@ -23,7 +23,7 @@ namespace LoanManagementSystem.Models
 
         [Required]
         public bool Active { get; set; } = true;
-
+        [JsonIgnore]
         public virtual User? User { get; set; }
         [JsonIgnore]
         public virtual ICollection<LoanApplication>? LoanApplication { get; set; }

@@ -2,7 +2,11 @@
 using LoanManagementSystem.Data;
 using LoanManagementSystem.Repository;
 using LoanManagementSystem.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 
 namespace LoanManagementSystem
 {
@@ -28,11 +32,63 @@ namespace LoanManagementSystem
             builder.Services.AddScoped<IRepaymentService, RepaymentService>();
             builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
+            builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
-            builder.Services.AddControllers();
-           
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    RoleClaimType=ClaimTypes.Role,
+                    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text
+                    .Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecurityKey"]))
+                };
+            });
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
+
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Loan Management System API",
+                    Version = "v1",
+                    Description = "API for managing loans, customers, and officers."
+                });
+                var securityScheme = new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme.", 
+                    Reference= new OpenApiReference
+                    {
+                        Id=JwtBearerDefaults.AuthenticationScheme,
+                        Type =ReferenceType.SecurityScheme
+                    }
+                };
+                options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { } }
+                });
+            });
 
             var app = builder.Build();
 
@@ -40,7 +96,11 @@ namespace LoanManagementSystem
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Loan Management System API v1");
+                    options.EnablePersistAuthorization();
+                });
             }
 
             app.UseHttpsRedirection();

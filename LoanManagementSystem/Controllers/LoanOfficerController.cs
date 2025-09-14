@@ -52,5 +52,35 @@ namespace LoanManagementSystem.Controllers
             var result = await _service.Delete(id);
             return Ok(result);
         }
+        [HttpPost("Assign-LoanOfficer")]
+        public async Task<ActionResult<LoanOfficer>> AssignLoanOfficer(int applicationId)
+        {
+            var officer = await _service.AssignApplication(applicationId);
+            if (officer == null)
+            {
+                return NotFound("No loan officer available");
+            }
+            return Ok(officer);
+        }
+        [HttpPost("Activate")]
+        public async Task<IActionResult> Activate(int officerId)
+        {
+            var result = await _service.Activate(officerId);
+            if (!result)
+            {
+                return NotFound("Officer not found");
+            }
+            return Ok(result);
+        }
+        [HttpPost("Deactivate")]
+        public async Task<IActionResult> Deactivate(int officerId)
+        {
+            var result = await _service.Deactivate(officerId);
+            if (!result)
+            {
+                return NotFound("Officer not found");
+            }
+            return Ok(result);
+        }
     }
 }

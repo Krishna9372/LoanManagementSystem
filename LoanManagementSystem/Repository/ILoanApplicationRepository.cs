@@ -9,5 +9,6 @@ namespace LoanManagementSystem.Repository
         Task<LoanApplication> Update(LoanApplication loanApplication);
         Task<LoanApplication> Delete(int id);
         Task<IEnumerable<LoanApplication>> GetAll();
+        Task SaveChangesAsync();
     }
 }

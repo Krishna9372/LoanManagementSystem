@@ -9,5 +9,7 @@ namespace LoanManagementSystem.Service
         Task<Customer> Delete(int id);
         Task<Customer> GetById(int id);
         Task<IEnumerable<Customer>> GetAll();
+        Task<bool> UpdateProfile(Customer updatedCustomer);
+        public Task<Customer> VerifyKYC(int admin, int customerId, string aadhaarId);
     }
 }

@@ -17,9 +17,9 @@ namespace LoanManagementSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> Post(Customer customer)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var newCustomer= await _service.Create(customer);
+                var newCustomer = await _service.Create(customer);
                 return CreatedAtAction("Get", new { id = newCustomer.Customer_Id }, newCustomer);
             }
             return BadRequest(customer);
@@ -33,7 +33,7 @@ namespace LoanManagementSystem.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> Get(int id)
         {
-            var authors=await _service.GetById(id);
+            var authors = await _service.GetById(id);
             return Ok(authors);
         }
         [HttpPut]
@@ -52,5 +52,38 @@ namespace LoanManagementSystem.Controllers
             var deleted = await _service.Delete(id);
             return Ok(deleted);
         }
+        [HttpPut("UpdateProfile")]
+        public async Task<ActionResult> UpdateProfile(Customer customer)
+        {
+            if (ModelState.IsValid)
+            {
+                var success = await _service.UpdateProfile(customer);
+                if (success)
+                    return NoContent();
+                else
+                    return NotFound();
+            }
+            return BadRequest(customer);
+        }
+        [HttpPost("verify-kyc")]
+        public async Task<ActionResult> VerifyKYC(int adminId, int customerId, string aadhaarId)
+        {
+            if (string.IsNullOrEmpty(aadhaarId))
+                return BadRequest("AadhaarId is required.");
+
+            var customer = await _service.VerifyKYC(adminId, customerId, aadhaarId);
+
+            if (customer == null)
+                return NotFound("Customer not found.");
+
+            return Ok(new
+            {
+                CustomerId = customer.Customer_Id,
+                CustomerName = customer.Customer_Name,
+                KYCStatus = customer.KYCStatus.ToString(),
+                VerifiedByAdmin = adminId
+            });
+        }
+
     }
 }

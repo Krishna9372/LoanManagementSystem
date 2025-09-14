@@ -53,8 +53,11 @@ namespace LoanManagementSystem.Models
         public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? DecisionAt { get; set; }
+        [JsonIgnore]
         public virtual Customer? Customer { get; set; }
+        [JsonIgnore]
         public virtual LoanScheme? LoanScheme { get; set; }
+        [JsonIgnore]
         public virtual LoanOfficer? LoanOfficer { get; set; }
         [JsonIgnore]
         public virtual ICollection<Document>? Document { get; set; }

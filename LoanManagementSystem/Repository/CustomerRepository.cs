@@ -50,7 +50,7 @@ namespace LoanManagementSystem.Repository
             if (existing != null)
             {
                 existing.Customer_Id= customer.Customer_Id; 
-                existing.User_Id= customer.User_Id;
+                existing.VerifiedByAdminId= customer.VerifiedByAdminId;
                 existing.Customer_Name= customer.Customer_Name;
                 existing.DOB= customer.DOB;
                 existing.Address= customer.Address;
@@ -61,6 +61,10 @@ namespace LoanManagementSystem.Repository
                 return existing;
             }
             return null;
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

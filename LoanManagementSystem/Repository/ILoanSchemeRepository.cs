@@ -9,5 +9,6 @@ namespace LoanManagementSystem.Repository
         Task<LoanScheme> Update(LoanScheme loanScheme);
         Task<LoanScheme> Delete(int id);
         Task<IEnumerable<LoanScheme>> GetAll();
+        Task<LoanScheme> SaveChangesAsync();
     }
 }

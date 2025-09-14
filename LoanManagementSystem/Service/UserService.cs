@@ -30,5 +30,14 @@ namespace LoanManagementSystem.Service
         {
             return await _repos.Update(user);
         }
+        async Task<bool> IUserService.ChangePassword(User user, string oldPassword, string newPassword)
+        {
+            var existing = await _repos.GetById(user.UserId);
+            if (existing == null || existing.Password != oldPassword)
+                return false;
+
+            await _repos.UpdatePassword(user.UserId, newPassword);
+            return true;
+        }
     }
 }

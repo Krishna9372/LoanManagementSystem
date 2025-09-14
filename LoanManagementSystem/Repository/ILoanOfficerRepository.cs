@@ -10,5 +10,8 @@ namespace LoanManagementSystem.Repository
         Task<LoanOfficer> Delete(int id);
         Task<IEnumerable<LoanOfficer>> GetAll();
         Task<LoanOfficer> GetByUserId(int userId);
+        public Task<List<LoanOfficer>> GetByCityAsync(string city);
+        public Task<List<LoanOfficer>> GetActiveOfficersAsync();
+        public Task SaveChangesAsync();
     }
 }

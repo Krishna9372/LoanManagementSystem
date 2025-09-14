@@ -33,7 +33,7 @@ namespace LoanManagementSystem.Repository
         }
         async Task<LoanApplication> ILoanApplicationRepository.GetById(int id)
         {
-            var existing = await _context.LoanApplications.FirstOrDefaultAsync(l => l.ApplicationId == id);
+            var existing = await _context.LoanApplications.Include(a => a.Customer).FirstOrDefaultAsync(l => l.ApplicationId == id);
             if (existing == null)
             {
                 throw new KeyNotFoundException("Loan Application not found");
@@ -58,6 +58,10 @@ namespace LoanManagementSystem.Repository
                 await _context.SaveChangesAsync();
             }
             return existing;
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

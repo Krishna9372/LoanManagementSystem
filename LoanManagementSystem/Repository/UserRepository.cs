@@ -1,5 +1,6 @@
 ﻿using LoanManagementSystem.Data;
 using LoanManagementSystem.Models;
+using LoanManagementSystem.Service;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoanManagementSystem.Repository
@@ -32,7 +33,6 @@ namespace LoanManagementSystem.Repository
             if (existing != null)
             {
                 existing.Username = user.Username;
-                existing.Password = user.Password;
                 existing.Role = user.Role;
                 await _context.SaveChangesAsync();
             }
@@ -51,6 +51,15 @@ namespace LoanManagementSystem.Repository
         async Task<IEnumerable<User>> IUserRepository.GetAll()
         {
             return await _context.Users.ToListAsync();
+        }
+        public async Task UpdatePassword(int userId, string newPassword)
+        {
+            var existing = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (existing != null)
+            {
+                existing.Password = newPassword;
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

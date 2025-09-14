@@ -9,6 +9,7 @@ namespace LoanManagementSystem.Repository
         Task<Customer> Delete(int id);
         Task<Customer> GetById(int id);
         Task<IEnumerable<Customer>> GetAll();
+        public Task SaveChangesAsync();
 
     }   
 }

@@ -16,7 +16,7 @@ namespace LoanManagementSystem
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<LoanManagementSystemContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDbConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultDbConnection")).UseLazyLoadingProxies());
 
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();

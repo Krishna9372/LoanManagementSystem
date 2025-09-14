@@ -9,5 +9,6 @@ namespace LoanManagementSystem.Service
         Task<IEnumerable<User>> GetAll();
         Task<User> Update(User user);
         Task<User> Delete(int id);
+        Task<bool> ChangePassword(User user, string oldPassword, string newPassword);
     }
 }

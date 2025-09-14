@@ -31,7 +31,7 @@ namespace LoanManagementSystem.Repository
         {
             return await _context.LoanSchemes.ToListAsync();
         }
-        async Task<LoanScheme> ILoanSchemeRepository.GetById(int id)
+        async Task<LoanScheme?> ILoanSchemeRepository.GetById(int id)
         {
             var existing = await _context.LoanSchemes.FirstOrDefaultAsync(s => s.SchemeId == id);
             if (existing == null)
@@ -55,6 +55,12 @@ namespace LoanManagementSystem.Repository
                 await _context.SaveChangesAsync();
             }
             return existing;
+        }
+        async Task<LoanScheme> ILoanSchemeRepository.SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+            return null;
+
         }
     }
 }

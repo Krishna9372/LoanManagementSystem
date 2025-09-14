@@ -57,5 +57,17 @@ namespace LoanManagementSystem.Repository
         {
             return await _context.LoanOfficers.FirstOrDefaultAsync(o => o.UserId == userId);
         }
+        public async Task<List<LoanOfficer>> GetByCityAsync(string city)
+        {
+            return await _context.LoanOfficers.Where(c => c.City == city && c.Active).ToListAsync();
+        }
+        public async Task<List<LoanOfficer>> GetActiveOfficersAsync()
+        {
+            return await _context.LoanOfficers.Where(o => o.Active).ToListAsync();
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
     }
 }

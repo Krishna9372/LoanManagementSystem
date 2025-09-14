@@ -10,5 +10,8 @@ namespace LoanManagementSystem.Service
         Task<LoanOfficer> Update(LoanOfficer officer);
         Task<LoanOfficer> Delete(int id);
         Task<LoanOfficer> GetByUserId(int userId);
+        Task<LoanOfficer> AssignApplication(int applicationId);
+        Task<bool> Activate(int officerId);
+        Task<bool> Deactivate(int officerId);
     }
 }

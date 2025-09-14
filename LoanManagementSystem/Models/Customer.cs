@@ -16,7 +16,7 @@ namespace LoanManagementSystem.Models
 
         [Required(ErrorMessage = "User reference is required")]
         [ForeignKey("User")]
-        public int User_Id { get; set; }
+        public int VerifiedByAdminId { get; set; }
 
         [Required(ErrorMessage = "Customer name is required")]
         [StringLength(100, ErrorMessage = "Customer name cannot exceed 100 characters")]
@@ -40,7 +40,7 @@ namespace LoanManagementSystem.Models
 
         [Required(ErrorMessage = "KYC status is required")]
         public KYCStatus KYCStatus { get; set; }
-        [JsonIgnore]
+        
         public virtual User? User { get; set; }
         [JsonIgnore]
         public virtual ICollection<LoanApplication>? LoanApplication { get; set; }

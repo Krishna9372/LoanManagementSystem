@@ -52,5 +52,30 @@ namespace LoanManagementSystem.Controllers
             var result = await _service.Delete(id);
             return Ok(result);
         }
+        [HttpPost("activate/{schemeId}")]
+        public async Task<IActionResult> Activate(int adminId, int schemeId)
+        {
+            var result = await _service.Activate(adminId, schemeId);
+            if (!result)
+                return NotFound("Scheme not found");
+
+            return Ok("Scheme activated successfully.");
+        }
+
+        [HttpPost("deactivate/{schemeId}")]
+        public async Task<IActionResult> Deactivate(int adminId, int schemeId)
+        {
+            var result = await _service.Deactivate(adminId, schemeId);
+            if (!result)
+                return NotFound("Scheme not found");
+
+            return Ok("Scheme deactivated successfully.");
+        }
+        [HttpGet("Calculate-Interset")]
+        public async Task<ActionResult<decimal>> CalculateInterest(int schemeId, decimal amount)
+        {
+            var interest = await _service.CalculateInterest(schemeId, amount);
+            return Ok(interest);
+        }
     }
 }

@@ -51,5 +51,16 @@ namespace LoanManagementSystem.Controllers
             var result = await _service.Delete(id);
             return Ok(result);
         }
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(int userId, string oldPassword, string newPassword)
+        {
+            var result = await _service.ChangePassword(new User { UserId = userId }, oldPassword, newPassword);
+            if (!result)
+            {
+                return BadRequest(new { Message = "Old password is incorrect or user not found" });
+            }
+            return Ok(new { Message = "Password updated successfully" });
+        }
+
     }
 }

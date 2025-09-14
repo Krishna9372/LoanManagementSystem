@@ -9,5 +9,6 @@ namespace LoanManagementSystem.Repository
         Task<User> Update(User user);
         Task<User> Delete(int id);
         Task<IEnumerable<User>> GetAll();
+        public Task UpdatePassword(int userId, string newPassword);
     }
 }

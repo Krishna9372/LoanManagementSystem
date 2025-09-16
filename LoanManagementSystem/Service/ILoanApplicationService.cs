@@ -9,5 +9,11 @@ namespace LoanManagementSystem.Service
         Task<IEnumerable<LoanApplication>> GetAll();
         Task<LoanApplication> Update(LoanApplication application);
         Task<LoanApplication> Delete(int id);
+        Task<LoanApplication> Approve(int applicationId);
+        Task<LoanApplication> Reject(int applicationId, string reason);
+        Task<LoanApplication> Close(int applicationId);
+        Task<LoanApplication> Disburse(int applicationId);
+        Task<LoanApplication> UnderReview(int applicationId);
+
     }
 }

@@ -14,16 +14,20 @@ namespace LoanManagementSystem.Controllers
         {
             _service = service;
         }
-        [HttpPost]
-        public async Task<ActionResult<Repayment>> Create(Repayment repayment)
+        [HttpPost("FirstPayment")]
+        public async Task<ActionResult<Repayment>> FirstPayment(int applicationId, decimal paidAmount)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _service.Create(repayment);
-                return CreatedAtAction("Get", new { id = repayment.RepaymentId }, result);
-            }
-            return BadRequest(repayment);
+            if (applicationId <= 0 || paidAmount <= 0)
+                return BadRequest("Invalid application ID or paid amount.");
+
+            var repayment = await _service.PayInstallment(applicationId, paidAmount);
+
+            // Use CreatedAtAction to return 201 with location header
+            return CreatedAtAction("Get", new { id = repayment.RepaymentId }, repayment);
         }
+        
+
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Repayment>>> Get()
         {

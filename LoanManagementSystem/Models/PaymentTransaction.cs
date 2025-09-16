@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace LoanManagementSystem.Models
 {
@@ -51,8 +52,10 @@ namespace LoanManagementSystem.Models
 
         [Required(ErrorMessage = "Paid date is required")]
         public DateTime PaidAt { get; set; } = DateTime.UtcNow;
+        [JsonIgnore]
 
         public virtual Repayment? Repayment { get; set; }
+        [JsonIgnore]
         public virtual LoanApplication? LoanApplication { get; set; }
     }
 }

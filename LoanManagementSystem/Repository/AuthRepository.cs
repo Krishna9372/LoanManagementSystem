@@ -12,32 +12,25 @@ namespace LoanManagementSystem.Repository
             _context = context;
         }
 
-        public async Task<LoginResponse> Login(LoginRequest loginRequest)
+        async Task<LoginResponse> IAuthRepository.Login(LoginRequest login)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == loginRequest.Email && u.Password == loginRequest.Password);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == login.UserName && u.Password == login.Password);
+
+            LoginResponse response;
 
             if (user != null)
             {
-                return new LoginResponse
-                {
-                    IsSuccess = true,
-                    User = user,
-                    Role = user.Role.ToString(),
-                    Token=""
-                };
+                response = new LoginResponse { IsSuccess = true, User = user, Token = "" };
+                return response;
             }
 
-            // If login fails
-            return new LoginResponse
-            {
-                IsSuccess = false,
-                User = null,
-                Role = null,
-                Token = null
-            };
+            response = new LoginResponse { IsSuccess = false, User = null, Token = "" };
+            return response;
         }
 
-       
+
     }
+
+
 }
+

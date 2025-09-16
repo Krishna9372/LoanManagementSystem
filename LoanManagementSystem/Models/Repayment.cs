@@ -30,6 +30,16 @@ namespace LoanManagementSystem.Models
         [Required(ErrorMessage = "Due date is required")]
         [DataType(DataType.Date)]
         public DateTime DueDate { get; set; }
+        [Required(ErrorMessage = "Amount due is required")]
+        [Range(0, double.MaxValue, ErrorMessage = "Amount due cannot be negative")]
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal AmountPaid { get; set; }
+        [Required(ErrorMessage = "Amount due is required")]
+        [Range(0, double.MaxValue, ErrorMessage = "Amount due cannot be negative")]
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal AmountEMI { get; set; }
 
         [Required(ErrorMessage = "Amount due is required")]
         [Range(0, double.MaxValue, ErrorMessage = "Amount due cannot be negative")]
@@ -50,6 +60,7 @@ namespace LoanManagementSystem.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18,2)")]
         public decimal PenaltyAmount { get; set; } = 0;
+        [JsonIgnore]
         public virtual LoanApplication? LoanApplication { get; set; }
         [JsonIgnore]
         public virtual ICollection<PaymentTransaction>? PaymentTransaction { get; set; }

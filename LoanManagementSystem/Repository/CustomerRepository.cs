@@ -50,7 +50,7 @@ namespace LoanManagementSystem.Repository
             if (existing != null)
             {
                 existing.Customer_Id= customer.Customer_Id; 
-                existing.VerifiedByAdminId= customer.VerifiedByAdminId;
+                existing.CustomerUserId= customer.CustomerUserId;
                 existing.Customer_Name= customer.Customer_Name;
                 existing.DOB= customer.DOB;
                 existing.Address= customer.Address;

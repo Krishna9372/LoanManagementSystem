@@ -16,7 +16,8 @@ namespace LoanManagementSystem.Models
 
         [Required(ErrorMessage = "User reference is required")]
         [ForeignKey("User")]
-        public int VerifiedByAdminId { get; set; }
+        public int CustomerUserId { get; set; }
+        public int? VerifiedByAdminId { get; set; }
 
         [Required(ErrorMessage = "Customer name is required")]
         [StringLength(100, ErrorMessage = "Customer name cannot exceed 100 characters")]

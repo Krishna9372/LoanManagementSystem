@@ -9,10 +9,11 @@ namespace LoanManagementSystem.Models
     public enum ApplicationStatus
     {
         Pending,
+        UnderReview,
         Approved,
         Rejected,
-        Completed,
-        Failed
+        Disbursed,
+        Closed
     }
 
     public class LoanApplication
@@ -53,6 +54,7 @@ namespace LoanManagementSystem.Models
         public DateTime AppliedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? DecisionAt { get; set; }
+        public string? RejectionReason { get; set; } 
         [JsonIgnore]
         public virtual Customer? Customer { get; set; }
         [JsonIgnore]

@@ -70,7 +70,7 @@ namespace LoanManagementSystem.Migrations
                         column: x => x.User_Id,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

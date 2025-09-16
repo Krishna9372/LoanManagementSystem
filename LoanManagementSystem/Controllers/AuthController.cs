@@ -14,17 +14,24 @@ namespace LoanManagementSystem.Controllers
         {
             _authService = authService;
         }
-        [HttpPost]
+        [HttpPost("Login")]
         public async Task<ActionResult<LoginResponse>> Login(LoginRequest loginRequest)
         {
-            var loginResponse = await _authService.Login(loginRequest);
-            if (loginResponse.IsSuccess && loginResponse.User != null)
+
+            LoginResponse response;
+            if (ModelState.IsValid)
             {
-                var token = await _authService.GetToken(loginResponse.User);
-                loginResponse.Token = token;
-                return Ok(loginResponse);
+                response = await _authService.Login(loginRequest);
+                var token = response.Token;
+                if (response.IsSuccess && response.User != null)
+                {
+                    return Ok(new { token });
+                }
+                return Unauthorized(new { Message = "Invalid email or password" });
             }
-            return Unauthorized(new { Message = "Invalid email or password" });
+            return BadRequest();
         }
     }
 }
+
+

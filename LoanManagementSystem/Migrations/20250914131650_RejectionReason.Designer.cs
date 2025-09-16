@@ -4,6 +4,7 @@ using LoanManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LoanManagementSystem.Migrations
 {
     [DbContext(typeof(LoanManagementSystemContext))]
-    partial class LoanManagementSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20250914131650_RejectionReason")]
+    partial class RejectionReason
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,9 +50,6 @@ namespace LoanManagementSystem.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("CustomerUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Customer_Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -61,12 +61,12 @@ namespace LoanManagementSystem.Migrations
                     b.Property<int>("KYCStatus")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VerifiedByAdminId")
+                    b.Property<int>("VerifiedByAdminId")
                         .HasColumnType("int");
 
                     b.HasKey("Customer_Id");
 
-                    b.HasIndex("CustomerUserId");
+                    b.HasIndex("VerifiedByAdminId");
 
                     b.ToTable("Customers");
                 });
@@ -312,12 +312,6 @@ namespace LoanManagementSystem.Migrations
                     b.Property<decimal>("AmountDue")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("AmountEMI")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("AmountPaid")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
 
@@ -418,7 +412,7 @@ namespace LoanManagementSystem.Migrations
                 {
                     b.HasOne("LoanManagementSystem.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CustomerUserId")
+                        .HasForeignKey("VerifiedByAdminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

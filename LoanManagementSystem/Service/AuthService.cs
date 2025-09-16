@@ -7,67 +7,53 @@ using System.Text;
 
 namespace LoanManagementSystem.Service
 {
-    public class AuthService:IAuthService
+    public class AuthService : IAuthService
     {
         private readonly ICustomerService _customerService;
         private readonly ILoanOfficerService _officerService;
-        private readonly IAuthRepository _repos;
+        private readonly IAuthRepository _authRepository;
         private readonly IConfiguration _config;
-        public AuthService(IAuthRepository repos,IConfiguration config,ICustomerService customerService, ILoanOfficerService officerService)
+        public AuthService(IAuthRepository authRepository, IConfiguration config, ICustomerService customerService, ILoanOfficerService officerService)
         {
-            _repos = repos;
+            _authRepository = authRepository;
             _config = config;
             _customerService = customerService;
-            _officerService= officerService;
+            _officerService = officerService;
         }
-        public async Task<LoginResponse> Login(LoginRequest loginRequest)
+        async Task<LoginResponse> IAuthService.Login(LoginRequest model)
         {
-            return await _repos.Login(loginRequest);
+            var response = await _authRepository.Login(model);
+            if (response.IsSuccess)
+            {
+                response.Token = GenerateToken(response.User);
+            }
+            return response;
         }
 
-        async Task<string> IAuthService.GetToken(User user)
+        private string GenerateToken(User user)
         {
-            int userId = user.UserId;
-            string role = user.Role.ToString();
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:SecurityKey"]));
-            var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var Secretkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]));
+            var SigningCredentials = new SigningCredentials(Secretkey, SecurityAlgorithms.HmacSha256);
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier,userId.ToString()),
-                new Claim(ClaimTypes.Role,role)
-            };
-            if (user.Role == Role.Customer)
-            {
-                var customer = await _customerService.GetById(userId);
-                if (customer != null)
-                {
-                    claims.Add(new Claim("CustomerId", customer.Customer_Id.ToString()));
-                    claims.Add(new Claim("CustomerName", customer.Customer_Name));
-                }
-            }
-            if (user.Role == Role.LoanOfficer)
-            {
-                var loanOfficer = await _officerService.GetByUserId(userId);
-                if (loanOfficer != null)
-                {
-                    claims.Add(new Claim("OfficerId", loanOfficer.OfficerId.ToString()));
-                    claims.Add(new Claim("OfficerName", loanOfficer.FullName));
-                }
-            }
-            if (user.Role == Role.Admin)
-            {
-                claims.Add(new Claim("AdminId", userId.ToString()));
-                claims.Add(new Claim("AdminName", user.Username));
-            }
-            var token = new JwtSecurityToken(
+        {
+            new Claim(ClaimTypes.NameIdentifier,user.UserId.ToString()),
+            new Claim(ClaimTypes.MobilePhone,user.Phone),
+            new Claim(ClaimTypes.Email,user.Email),
+            new Claim(ClaimTypes.Role,user.Role.ToString())
+
+
+        };
+            var tokenOptions = new JwtSecurityToken(
                 issuer: _config["JwtSettings:Issuer"],
                 audience: _config["JwtSettings:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_config["JwtSettings:DurationInMinutes"])),
-                signingCredentials: signingCredentials
-                );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_config["JwtSettings:ExpiryInMinutes"])),
+                signingCredentials: SigningCredentials);
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            return tokenString;
         }
 
     }
+
 }

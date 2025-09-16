@@ -33,29 +33,70 @@ namespace LoanManagementSystem.Repository
         }
         async Task<Repayment> IRepaymentRepository.GetById(int id)
         {
-            var existing = await _context.Repayments.FirstOrDefaultAsync(r => r.RepaymentId == id);
-            if (existing == null)
+            var repayment = await _context.Repayments.FirstOrDefaultAsync(r => r.RepaymentId == id);
+
+            if (repayment == null)
             {
-                throw new KeyNotFoundException("Repayment not found");
-            }   
-            return existing;
+                // Debug log
+                throw new KeyNotFoundException($"Repayment with Id {id} not found in DB");
+            }
+
+            return repayment;
         }
-        async Task<Repayment> IRepaymentRepository.Update(Repayment repayment)
+        public async Task<Repayment> Update(Repayment repayment)
         {
             var existing = await _context.Repayments.FirstOrDefaultAsync(r => r.RepaymentId == repayment.RepaymentId);
             if (existing != null)
             {
+                // Update all relevant repayment fields
                 existing.ApplicationId = repayment.ApplicationId;
                 existing.InstallmentNumber = repayment.InstallmentNumber;
-                existing.DueDate = repayment.DueDate;
+                existing.AmountEMI = repayment.AmountEMI;
+                existing.AmountPaid = repayment.AmountPaid;
                 existing.AmountDue = repayment.AmountDue;
-                existing.PaidDate = repayment.PaidDate;
-                existing.Status = repayment.Status;
+                existing.DueDate = repayment.DueDate;
                 existing.IsOverdue = repayment.IsOverdue;
                 existing.PenaltyAmount = repayment.PenaltyAmount;
+                existing.Status = repayment.Status;
+
                 await _context.SaveChangesAsync();
             }
             return existing;
         }
+
+        async Task IRepaymentRepository.SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+        public async Task<decimal> GetTotalPaidByApplication(int applicationId)
+        {
+            return await _context.Repayments
+                .Where(r => r.ApplicationId == applicationId)
+                .SumAsync(r => r.AmountPaid);
+        }
+        public async Task DeleteAllByApplicationId(int applicationId)
+        {
+            var repayments = await _context.Repayments.Where(r => r.ApplicationId == applicationId && r.AmountDue > 0).ToListAsync();
+
+            if (repayments.Any())
+            {
+                _context.Repayments.RemoveRange(repayments);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<IEnumerable<Repayment>> GetAllByApplicationId(int applicationId)
+        {
+            return await _context.Repayments
+                                 .Where(r => r.ApplicationId == applicationId)
+                                 .OrderBy(r => r.InstallmentNumber)
+                                 .ToListAsync();
+        }
+        public async Task BulkInsert(List<Repayment> repayments)
+        {
+            await _context.Repayments.AddRangeAsync(repayments);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

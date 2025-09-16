@@ -1,5 +1,6 @@
 ﻿using LoanManagementSystem.Models;
 using LoanManagementSystem.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace LoanManagementSystem.Controllers
             _service = service;
         }
         [HttpPost]
+        [Authorize(Roles =nameof(Role.Admin))]
         public async Task<ActionResult<LoanScheme>> Create(LoanScheme scheme)
         {
             if (ModelState.IsValid)
@@ -25,6 +27,7 @@ namespace LoanManagementSystem.Controllers
             return BadRequest(scheme);
         }
         [HttpGet]
+        [Authorize(Roles = nameof(Role.Admin))]
         public async Task<ActionResult<IEnumerable<LoanScheme>>> Get()
         {
             var schemes = await _service.GetAll();

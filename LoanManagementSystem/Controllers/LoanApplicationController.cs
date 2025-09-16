@@ -36,9 +36,13 @@ namespace LoanManagementSystem.Controllers
             var application = await _service.GetById(id);
             return Ok(application);
         }
-        [HttpPut]
-        public async Task<ActionResult<LoanApplication>> Put(LoanApplication application)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<LoanApplication>> Put(int id,LoanApplication application)
         {
+            if(id!= application.ApplicationId)
+            {
+                return BadRequest("Application ID mismatch");
+            }
             if (ModelState.IsValid)
             {
                 var result = await _service.Update(application);
@@ -50,6 +54,36 @@ namespace LoanManagementSystem.Controllers
         public async Task<ActionResult<LoanApplication>> Delete(int id)
         {
             var result = await _service.Delete(id);
+            return Ok(result);
+        }
+        [HttpPut("UnderReview/{applicationId}")]
+        public async Task<ActionResult<LoanApplication>> UnderReview(int applicationId)
+        {
+            var result = await _service.UnderReview(applicationId);
+            return Ok(result);
+        }
+        [HttpPut("Approve/{applicationId}")]
+        public async Task<ActionResult<LoanApplication>> Approve(int applicationId)
+        {
+            var result = await _service.Approve(applicationId);
+            return Ok(result);
+        }
+        [HttpPut("Reject/{applicationId}")]
+        public async Task<ActionResult<LoanApplication>> Reject(int applicationId, [FromBody] string reason)
+        {
+            var result = await _service.Reject(applicationId, reason);
+            return Ok(result);
+        }
+        [HttpPut("Disburse/{applicationId}")]
+        public async Task<ActionResult<LoanApplication>> Disburse(int applicationId)
+        {
+            var result = await _service.Disburse(applicationId);
+            return Ok(result);
+        }
+        [HttpPut("Close/{applicationId}")]
+        public async Task<ActionResult<LoanApplication>> Close(int applicationId)
+        {
+            var result = await _service.Close(applicationId);
             return Ok(result);
         }
     }

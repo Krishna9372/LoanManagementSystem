@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Security.Claims;
+using System.Text;
 
 namespace LoanManagementSystem
 {
@@ -34,26 +35,46 @@ namespace LoanManagementSystem
             builder.Services.AddScoped<IDocumentService, DocumentService>();
             builder.Services.AddScoped<IAuthRepository, AuthRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
+            builder.Services.AddScoped<IPaymentTransactionService, PaymentTransactionService>();
+            builder.Services.AddScoped<IReportRepository, ReportRepository>();
+            builder.Services.AddScoped<IReportService, ReportService>();
 
-            builder.Services.AddAuthentication(options =>
+            builder.Services.AddAuthentication(opt =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    RoleClaimType=ClaimTypes.Role,
                     ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+                    RoleClaimType = ClaimTypes.Role,
+
                     ValidAudience = builder.Configuration["JwtSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text
-                    .Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecurityKey"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]))
+
                 };
+
             });
+
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularClient",
+                    policy =>
+                    {
+                        policy.WithOrigins("http://localhost:4200")
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
+
             builder.Services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
@@ -65,32 +86,34 @@ namespace LoanManagementSystem
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Loan Management System API",
                     Version = "v1",
-                    Description = "API for managing loans, customers, and officers."
+                    Title = "Loan Management System"
                 });
+
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
+                    Description = "Enter JWT Bearer token **_only_**",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme.", 
-                    Reference= new OpenApiReference
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
                     {
-                        Id=JwtBearerDefaults.AuthenticationScheme,
-                        Type =ReferenceType.SecurityScheme
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
                     }
                 };
+
                 options.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    {securityScheme, new string[] { } }
+                    { securityScheme, new string[] { } }
                 });
             });
 
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -102,7 +125,8 @@ namespace LoanManagementSystem
                     options.EnablePersistAuthorization();
                 });
             }
-
+            app.UseCors("AllowAngularClient");
+            app.UseAuthentication();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

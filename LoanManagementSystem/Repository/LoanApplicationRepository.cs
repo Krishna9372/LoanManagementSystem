@@ -38,7 +38,7 @@ namespace LoanManagementSystem.Repository
             {
                 throw new KeyNotFoundException("Loan Application not found");
             }
-            return existing;
+            return  existing;
         }
         async Task<LoanApplication> ILoanApplicationRepository.Update(LoanApplication loanApplication)
         {
@@ -59,9 +59,9 @@ namespace LoanManagementSystem.Repository
             }
             return existing;
         }
-        public async Task SaveChangesAsync()
+        public  Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
+            return _context.SaveChangesAsync();
         }
     }
 }
